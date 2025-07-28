@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from "react-router-dom";
 
 export default function LandingSection() {
   return (
@@ -14,9 +15,12 @@ export default function LandingSection() {
         <p className="text-base sm:text-lg md:text-xl mb-4 sm:mb-6 text-gray-100">
           Get peak comfy-chic<br />with new winter essentials.
         </p>
-        <button className="bg-white text-black px-4 sm:px-8 py-2 font-medium text-sm sm:text-base rounded-none tracking-wide shadow hover:bg-gray-100 transition">
-          SHOP NOW
-        </button>
+        <NavLink to = '/listing'>
+          <button className="bg-white text-black px-4 sm:px-8 py-2 font-medium text-sm sm:text-base rounded-none tracking-wide shadow hover:bg-gray-100 transition">
+            SHOP NOW
+          </button>
+        </NavLink>
+        
       </div>
     </section>
   );
