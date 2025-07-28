@@ -17,7 +17,7 @@ async function handleUserlogin(req,res) {
     if (match)
     {
         const token = setUser(foundUser);
-        return res.status(200).json({ message: "User logged in", token });
+        return res.status(200).json({ message: "User logged in", token , foundUser });
     } else {
         return res.status(400).json('Invalid Username or Password')
     }
