@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { data, useNavigate } from "react-router-dom";
-import axios from 'axios';
+
 
 const SignInPage = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -18,6 +18,17 @@ const SignInPage = () => {
       setError("All fields are required.");
       return;
     }
+    
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+    const regex= /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$"/;
+    if (regex.test(form.password)) {
+      //console.log(regex);
+      setError("Password must contain at least one capital letter and one special character.");
+      return;
+    }
     fetch("http://localhost:8002/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -31,8 +42,12 @@ const SignInPage = () => {
       })
       .then((data) => {
         console.log("Response: ", data);
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          console.log("Token stored successfully");
+        }
         navigate("/");
-      })
+      }) 
       .catch((err) => {
         console.error("Error: ", err);
         setError("Signup failed. Please try again.");
@@ -52,7 +67,7 @@ const SignInPage = () => {
         {/* Left: Form */}
         <div className="flex flex-col justify-center items-center w-full md:max-w-md px-4 sm:px-8 py-8 sm:py-12 order-1 md:order-none">
           <div className="w-full max-w-sm">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">Sign In</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">Sign Up</h2>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block text-gray-700 mb-1" htmlFor="name">Name</label>
@@ -89,6 +104,9 @@ const SignInPage = () => {
                   className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                   required
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Password must be at least 8 characters long and contain at least one capital letter and at least one special character.
+                </p>
               </div>
               {error && <div className="text-red-500 text-sm">{error}</div>}
               <button

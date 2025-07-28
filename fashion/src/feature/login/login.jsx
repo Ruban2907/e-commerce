@@ -30,6 +30,10 @@ const LoginPage = () => {
       })
       .then((data) => {
         console.log("Response: ", data);
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          console.log("Token stored successfully");
+        }
         navigate("/home");
       })
       .catch((err) => {
