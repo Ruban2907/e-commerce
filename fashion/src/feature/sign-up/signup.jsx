@@ -3,7 +3,15 @@ import { data, useNavigate } from "react-router-dom";
 
 
 const SignInPage = () => {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ 
+    firstname: "", 
+    lastname: "", 
+    email: "", 
+    password: "", 
+    gender: "", 
+    contact: "", 
+    address: "" 
+  });
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -28,8 +36,8 @@ const SignInPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.password) {
-      setError("All fields are required.");
+    if (!form.firstname || !form.lastname || !form.email || !form.password || !form.address) {
+      setError("First name, last name, email, password, and address are required.");
       return;
     }
     
@@ -45,9 +53,13 @@ const SignInPage = () => {
     }
 
     const formData = new FormData();
-    formData.append('name', form.name);
+    formData.append('firstname', form.firstname);
+    formData.append('lastname', form.lastname);
     formData.append('email', form.email);
     formData.append('password', form.password);
+    formData.append('gender', form.gender);
+    formData.append('contact', form.contact);
+    formData.append('address', form.address);
     if (selectedFile) {
       formData.append('picture', selectedFile);
     }
@@ -87,16 +99,29 @@ const SignInPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="flex flex-col md:flex-row w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-xl overflow-hidden">
         <div className="flex flex-col justify-center items-center w-full md:max-w-md px-4 sm:px-8 py-8 sm:py-12 order-1 md:order-none">
-          <div className="w-full max-w-sm">
+          <div className="w-full max-w-sm h-full flex flex-col">
             <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">Sign Up</h2>
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="flex-1 overflow-y-auto pr-2">
+              <form onSubmit={handleSubmit} className="space-y-5 pb-4">
               <div>
-                <label className="block text-gray-700 mb-1" htmlFor="name">Name</label>
+                <label className="block text-gray-700 mb-1" htmlFor="firstname">First Name</label>
                 <input
                   type="text"
-                  id="name"
-                  name="name"
-                  value={form.name}
+                  id="firstname"
+                  name="firstname"
+                  value={form.firstname}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 mb-1" htmlFor="lastname">Last Name</label>
+                <input
+                  type="text"
+                  id="lastname"
+                  name="lastname"
+                  value={form.lastname}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                   required
@@ -111,6 +136,46 @@ const SignInPage = () => {
                   value={form.email}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 mb-1" htmlFor="gender">Gender</label>
+                <select
+                  id="gender"
+                  name="gender"
+                  value={form.gender}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-700 mb-1" htmlFor="contact">Contact Number</label>
+                <input
+                  type="tel"
+                  id="contact"
+                  name="contact"
+                  value={form.contact}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  placeholder="Enter your contact number"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 mb-1" htmlFor="address">Address</label>
+                <textarea
+                  id="address"
+                  name="address"
+                  value={form.address}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  rows="3"
+                  placeholder="Enter your address"
                   required
                 />
               </div>
@@ -156,6 +221,7 @@ const SignInPage = () => {
                 Sign In
               </button>
             </form>
+            </div>
             <div className="mt-6 text-center text-sm text-gray-600">
               Already a member?{' '}
               <span
