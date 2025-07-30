@@ -2,6 +2,7 @@ const User = require("../model/user");
 const { setUser, getUser } = require("../services/secret");
 const bcrypt = require('bcrypt');
 const Multer = require("../model/multer");
+const multer = require("../middleware/multer");
 
 async function handleUserlogin(req,res) {
     const {email, password} = req.body;
@@ -18,11 +19,15 @@ async function handleUserlogin(req,res) {
     if (match)
     {
         const token = setUser(foundUser);
-        // Return user data without password
         const userData = {
             _id: foundUser._id,
-            name: foundUser.name,
+            firstname: foundUser.firstname,
+            lastname: foundUser.lastname,
+            name: `${foundUser.firstname} ${foundUser.lastname}`.trim(),
             email: foundUser.email,
+            gender: foundUser.gender,
+            contact: foundUser.contact,
+            address: foundUser.address,
             role: foundUser.role,
             picture: foundUser.picture
         };
@@ -36,13 +41,17 @@ async function handleUserlogin(req,res) {
 async function handleUserSignup(req,res) {
    try {
     console.log("am here")
-        const {name,email,password} = req.body;
+        const {firstname, lastname, email, password, gender, contact, address} = req.body;
         const hashpass = await bcrypt.hash(password,10);
         
         const userData = {
-            name: name,
+            firstname: firstname,
+            lastname: lastname,
             email: email,
             password: hashpass,
+            gender: gender,
+            contact: contact,
+            address: address
         };
         if (req.file) {
             userData.picture = {
@@ -56,8 +65,13 @@ async function handleUserSignup(req,res) {
         
         const userResponse = {
             _id: newUser._id,
-            name: newUser.name,
+            firstname: newUser.firstname,
+            lastname: newUser.lastname,
+            name: `${newUser.firstname} ${newUser.lastname}`.trim(),
             email: newUser.email,
+            gender: newUser.gender,
+            contact: newUser.contact,
+            address: newUser.address,
             role: newUser.role,
             picture: newUser.picture
         };
@@ -119,7 +133,21 @@ async function handleGetUserProfile(req, res) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json({ user });
+        // Create a response object with the name field for frontend compatibility
+        const userResponse = {
+            _id: user._id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            name: `${user.firstname} ${user.lastname}`.trim(),
+            email: user.email,
+            gender: user.gender,
+            contact: user.contact,
+            address: user.address,
+            role: user.role,
+            picture: user.picture
+        };
+
+        res.status(200).json({ user: userResponse });
     } catch (error) {
         console.error("Get profile error:", error);
         res.status(500).json({ message: "Failed to get user profile" });
@@ -163,10 +191,71 @@ async function handleGetUserPicture(req, res) {
     }
 }
 
+//patchaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+async function handleUpdateUserProfile(req, res) {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: "Authorization token required" });
+        }
+        const token = authHeader.substring(7);
+        const userData = getUser(token);
+        if (!userData) {
+            return res.status(401).json({ message: "Invalid or expired token" });
+        }
+        const user = await User.findById(userData._id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }   
+        
+        // Update fields if provided
+        if (req.body.firstname) user.firstname = req.body.firstname;
+        if (req.body.lastname) user.lastname = req.body.lastname;
+        if (req.body.email) user.email = req.body.email;
+        if (req.body.gender) user.gender = req.body.gender;
+        if (req.body.contact) user.contact = req.body.contact;
+        if (req.body.address) user.address = req.body.address;
+        if (req.body.password) {
+            const hashpass = await bcrypt.hash(req.body.password, 10);
+            user.password = hashpass;
+        }
+        if (req.file) {
+            user.picture = {
+                data: req.file.buffer,
+                contentType: req.file.mimetype,
+            };
+        }
+        
+        await user.save();
+        
+        const userResponse = {
+            _id: user._id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            name: `${user.firstname} ${user.lastname}`.trim(),
+            email: user.email,
+            gender: user.gender,
+            contact: user.contact,
+            address: user.address,
+            role: user.role,
+            picture: user.picture
+        };
+        
+        res.status(200).json({ 
+            message: "Profile updated successfully",
+            user: userResponse 
+        });
+    } catch (error) {
+        console.error("Update profile error:", error);
+        res.status(500).json({ message: "Failed to update user profile" });
+    }
+}
+
 module.exports = {
     handleUserlogin,
     handleUserSignup,
     handleImageUpload,
     handleGetUserProfile,
-    handleGetUserPicture
+    handleGetUserPicture,
+    handleUpdateUserProfile
 }
