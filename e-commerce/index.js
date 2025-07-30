@@ -2,8 +2,7 @@
 const express = require("express");
 const path = require("path");
 const { connectToMongoDB } = require("./config/connect"); 
-const loginRoute = require("./routes/authroute");
-const regRoute = require("./routes/registerroute");
+const authRoute = require("./routes/authroute");
 const cors = require('cors')
 
 const app = express();
@@ -20,8 +19,7 @@ app.use((req,res,next)=>{
   next()
 })
 
-app.use("/login",loginRoute);
-app.use("/signup",regRoute);
+app.use("/",authRoute);
 
 app.listen(PORT,()=> {
     console.log(`Server started at port: ${8002}`);

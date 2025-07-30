@@ -18,8 +18,11 @@ const userSchema = new mongoose.Schema(
             type: String,
             enum: ['user','admin'],
             default: 'user',
+        },
+        picture: {
+            data: { type: Buffer },
+            contentType: { type: String }
         }
-        
     },
     {timestamps: true}
 );

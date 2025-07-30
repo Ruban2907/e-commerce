@@ -8,6 +8,7 @@ import Header from './shared/components/Header';
 import Final from './shared/components/Final';
 import Contact from './page/contact/index.jsx';
 import Lust from './page/listing/index.jsx';
+import Profilepage from './page/profile/Profile.jsx';
 import './App.css';
 
 const withLayout = (Component) => {
@@ -27,6 +28,7 @@ const AboutPage = withLayout(About);
 const BlogPage = withLayout(Blog);
 const ContactPage = withLayout(Contact);
 const ListingPage = withLayout(Lust);
+const ProfilePage = withLayout(Profilepage)
 
 export default function AppRoutes() {
   return (
@@ -39,6 +41,7 @@ export default function AppRoutes() {
         <Route path="/stories" element={<BlogPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/listing" element={<ListingPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );

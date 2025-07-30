@@ -4,12 +4,26 @@ import { data, useNavigate } from "react-router-dom";
 
 const SignInPage = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError("");
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        setError("Please select an image file.");
+        return;
+      }
+      
+      setSelectedFile(file);
+      setError("");
+    }
   };
 
   const handleSubmit = (e) => {
@@ -23,16 +37,24 @@ const SignInPage = () => {
       setError("Password must be at least 8 characters long.");
       return;
     }
-    const regex= /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$"/;
-    if (regex.test(form.password)) {
-      //console.log(regex);
+    const regex= /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!4@$%^&*-]).{8,}$/;
+    if (!regex.test(form.password)) {
+      console.log("dfghj");
       setError("Password must contain at least one capital letter and one special character.");
       return;
     }
+
+    const formData = new FormData();
+    formData.append('name', form.name);
+    formData.append('email', form.email);
+    formData.append('password', form.password);
+    if (selectedFile) {
+      formData.append('picture', selectedFile);
+    }
+
     fetch("http://localhost:8002/signup", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: formData, 
     })
       .then((res) => {
         if (!res.ok) {
@@ -64,7 +86,6 @@ const SignInPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="flex flex-col md:flex-row w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-xl overflow-hidden">
-        {/* Left: Form */}
         <div className="flex flex-col justify-center items-center w-full md:max-w-md px-4 sm:px-8 py-8 sm:py-12 order-1 md:order-none">
           <div className="w-full max-w-sm">
             <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">Sign Up</h2>
@@ -108,6 +129,25 @@ const SignInPage = () => {
                   Password must be at least 8 characters long and contain at least one capital letter and at least one special character.
                 </p>
               </div>
+              <div>
+                <label className="block text-gray-700 mb-1" htmlFor="picture">Profile Picture (Optional)</label>
+                <input
+                  type="file"
+                  id="picture"
+                  name="picture"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Accepted formats: JPG, PNG, GIF. Max size: 5MB
+                </p>
+                {selectedFile && (
+                  <div className="mt-2">
+                    <p className="text-sm text-green-600">Selected: {selectedFile.name}</p>
+                  </div>
+                )}
+              </div>
               {error && <div className="text-red-500 text-sm">{error}</div>}
               <button
                 type="submit"
@@ -129,7 +169,6 @@ const SignInPage = () => {
             </div>
           </div>
         </div>
-        {/* Right: Image */}
         <div className="w-full md:flex-1 bg-gray-100 flex items-center justify-center order-2 md:order-none">
           <img
             src="/assets/signup.png"
