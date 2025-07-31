@@ -1,4 +1,5 @@
 const { getUser } = require("../services/secret");
+const User = require("../model/user");
 
 function authenticate(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -14,4 +15,25 @@ function authenticate(req, res, next) {
     next();
 }
 
-module.exports = authenticate; 
+async function requireAdmin(req, res, next) {
+    try {
+        authenticate(req, res, async (err) => {
+            if (err) return next(err);
+            const user = await User.findById(req.user._id);
+            if (!user) {
+                return res.status(401).json({ message: "User not found" });
+            }
+            
+            if (user.role !== 'admin') {
+                return res.status(403).json({ message: "Access denied: Admins only" });
+            }
+            
+            req.adminUser = user;
+            next();
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Authentication error", error: error.message });
+    }
+}
+
+module.exports = { authenticate, requireAdmin }; 

@@ -2,7 +2,7 @@
 const express = require("express");
 const path = require("path");
 const { connectToMongoDB } = require("./config/connect"); 
-const authRoute = require("./routes/authroute");
+const authRoute = require("./routes/allroutes");
 const cors = require('cors')
 
 const app = express();
