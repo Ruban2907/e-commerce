@@ -9,6 +9,8 @@ import Final from './shared/components/Final';
 import Contact from './page/contact/index.jsx';
 import Lust from './page/listing/index.jsx';
 import Profilepage from './page/profile/Profile.jsx';
+import Admin from './page/admin/index.jsx';
+import Createuser from './page/createUser/Createuser.jsx';
 import './App.css';
 
 const withLayout = (Component) => {
@@ -28,8 +30,9 @@ const AboutPage = withLayout(About);
 const BlogPage = withLayout(Blog);
 const ContactPage = withLayout(Contact);
 const ListingPage = withLayout(Lust);
-const ProfilePage = withLayout(Profilepage)
-
+const ProfilePage = withLayout(Profilepage);
+const AdminPage = withLayout(Admin);
+const CreateUser  = withLayout(Createuser);
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -42,6 +45,8 @@ export default function AppRoutes() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/listing" element={<ListingPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/create-user" element={<CreateUser />} />
       </Routes>
     </BrowserRouter>
   );

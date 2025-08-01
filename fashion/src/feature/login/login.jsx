@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { setUserInfo } from "../../utils/userUtils";
 
 const LoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -33,6 +34,10 @@ const LoginPage = () => {
         if (data.token) {
           localStorage.setItem('token', data.token);
           console.log("Token stored successfully");
+        }
+        if (data.foundUser) {
+          setUserInfo(data.foundUser);
+          console.log("User info stored successfully");
         }
         navigate("/home");
       })
