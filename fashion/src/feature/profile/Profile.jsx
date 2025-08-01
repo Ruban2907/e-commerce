@@ -206,14 +206,13 @@ export default function Profile() {
                      placeholder="Address"
                      rows="3"
                    />
-                   <input
-                     name="password"
-                     type="password"
-                     value={userData.password}
+                   {/* <input
+                     name="Role"
+                     value={userData.role}
                      onChange={handleInputChange}
                      className="border rounded px-2 py-1 mb-2 w-full"
                      placeholder="New password (optional)"
-                   />
+                   /> */}
                  </>
                ) : (
                  <>
