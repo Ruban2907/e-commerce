@@ -1,4 +1,3 @@
-//require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const { connectToMongoDB } = require("./config/connect"); 
@@ -21,6 +20,15 @@ app.use((req,res,next)=>{
 
 app.use("/",authRoute);
 
-app.listen(PORT,()=> {
-    console.log(`Server started at port: ${8002}`);
+app.use((error, req, res, next) => {
+  console.error('Error:', error);
+  res.status(500).json({ 
+    success: false, 
+    message: 'Internal server error',
+    error: error.message 
+  });
+});
+
+const server = app.listen(PORT,()=> {
+    console.log(`Server started at port: ${PORT}`);
 })

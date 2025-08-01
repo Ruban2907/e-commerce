@@ -9,6 +9,7 @@ async function handleGetAllItems(req, res) {
             data: items
         });
     } catch (error) {
+        console.error("Get all items error:", error);
         res.status(500).json({
             success: false,
             message: 'Error fetching items',
@@ -40,6 +41,7 @@ async function handleGetItemById(req, res) {
             data: item
         });
     } catch (error) {
+        console.error("Get item by ID error:", error);
         res.status(500).json({
             success: false,
             message: 'Error fetching item',
@@ -74,20 +76,23 @@ async function handleCreateItem(req, res) {
         }
 
         let images = [];
-        if (req.file) {
-            images.push({
-                data: req.file.buffer,
-                contentType: req.file.mimetype,
+        
+        if (req.files && req.files.length > 0) {
+            req.files.forEach(file => {
+                images.push({
+                    data: file.buffer,
+                    contentType: file.mimetype,
+                });
             });
         }
 
         const newItem = new Item({
             name,
             images,
-            price,
+            price: Number(price),
             colors: Array.isArray(colors) ? colors : [colors],
-            stock,
-            description
+            stock: Number(stock),
+            description: description || ""
         });
 
         const savedItem = await newItem.save();
@@ -98,6 +103,7 @@ async function handleCreateItem(req, res) {
             data: savedItem
         });
     } catch (error) {
+        console.error("Create item error:", error);
         res.status(500).json({
             success: false,
             message: 'Error creating item',
@@ -121,33 +127,38 @@ async function handleUpdateItem(req, res) {
 
         if (name !== undefined) item.name = name;
         if (price !== undefined) {
-            if (price < 0) {
+            const numPrice = Number(price);
+            if (isNaN(numPrice) || numPrice < 0) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Price cannot be negative'
+                    message: 'Price must be a valid positive number'
                 });
             }
-            item.price = price;
+            item.price = numPrice;
         }
         if (colors !== undefined) {
             item.colors = Array.isArray(colors) ? colors : [colors];
         }
         if (stock !== undefined) {
-            if (stock < 0) {
+            const numStock = Number(stock);
+            if (isNaN(numStock) || numStock < 0) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Stock cannot be negative'
+                    message: 'Stock must be a valid positive number'
                 });
             }
-            item.stock = stock;
+            item.stock = numStock;
         }
         if (description !== undefined) item.description = description;
-        if (isAvailable !== undefined) item.isAvailable = isAvailable;
+        if (isAvailable !== undefined) item.isAvailable = Boolean(isAvailable);
 
-        if (req.file) {
-            item.images.push({
-                data: req.file.buffer,
-                contentType: req.file.mimetype,
+        // Handle multiple images for update
+        if (req.files && req.files.length > 0) {
+            req.files.forEach(file => {
+                item.images.push({
+                    data: file.buffer,
+                    contentType: file.mimetype,
+                });
             });
         }
 
@@ -159,6 +170,7 @@ async function handleUpdateItem(req, res) {
             data: updatedItem
         });
     } catch (error) {
+        console.error("Update item error:", error);
         res.status(500).json({
             success: false,
             message: 'Error updating item',
@@ -185,6 +197,7 @@ async function handleDeleteItem(req, res) {
             message: 'Item deleted successfully'
         });
     } catch (error) {
+        console.error("Delete item error:", error);
         res.status(500).json({
             success: false,
             message: 'Error deleting item',
