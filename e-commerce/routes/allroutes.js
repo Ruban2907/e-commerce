@@ -4,7 +4,7 @@ const {handleUserlogin, handleUserSignup, } = require("../controller/auth")
 const {handleImageUpload, handleGetUserProfile, handleGetUserPicture, handleUpdateUserProfile, handleGetAllUsers, handleDeleteUser, handleCreateUser, handleUpdateUser} = require("../controller/uses")
 const { authenticate, requireAdmin } = require("../middleware/authentication");
 const upload = require("../middleware/multer");
-const { handleGetAllItems, handleGetItemById, handleCreateItem, handleUpdateItem, handleDeleteItem } = require("../controller/itemops");
+const { handleGetAllItems, handleGetItemById, handleCreateItem, handleUpdateItem, handleDeleteItem, handleAddToCart } = require("../controller/itemops");
 
 router.post("/signup", upload.single("picture"), handleUserSignup)
 router.post("/login", handleUserlogin);
@@ -22,6 +22,7 @@ router.delete("/admin/users/:id", requireAdmin, handleDeleteUser);
 // Item routes - User operations (require authentication)
 router.get("/items", authenticate, handleGetAllItems);
 router.get("/items/:id", authenticate, handleGetItemById);
+router.post("/items/:id/add-to-cart", authenticate, handleAddToCart);
 
 // Item routes - Admin operations (require admin authentication)
 router.post("/items", requireAdmin, upload.array("images", 5), handleCreateItem);

@@ -2,11 +2,55 @@ const Item = require('../model/items');
 
 async function handleGetAllItems(req, res) {
     try {
-        const items = await Item.find({ isAvailable: true });
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 12; // Default 12 items per page
+        const skip = (page - 1) * limit;
+
+        const items = await Item.find({ isAvailable: true })
+            .select('name price stock description images colors')
+            .limit(limit)
+            .skip(skip);
+
+        // Convert image buffers to base64 strings for proper JSON serialization
+        const serializedItems = items.map(item => {
+            const itemObj = item.toObject();
+            if (itemObj.images && itemObj.images.length > 0) {
+                itemObj.images = itemObj.images.map(image => ({
+                    data: image.data.toString('base64'),
+                    contentType: image.contentType
+                }));
+            }
+            return itemObj;
+        });
+
+        // Debug: Check what we're sending
+        console.log('Backend: Found items:', items.length);
+        if (items.length > 0) {
+            console.log('Backend: First item:', {
+                _id: items[0]._id,
+                name: items[0].name,
+                imagesCount: items[0].images?.length || 0,
+                hasImages: !!items[0].images,
+                firstImage: items[0].images?.[0] ? {
+                    hasData: !!items[0].images[0].data,
+                    dataLength: items[0].images[0].data?.length,
+                    contentType: items[0].images[0].contentType
+                } : null
+            });
+        } else {
+            console.log('Backend: No items found in database');
+        }
+
+        const totalItems = await Item.countDocuments({ isAvailable: true });
+        const totalPages = Math.ceil(totalItems / limit);
+
         res.status(200).json({
             success: true,
-            count: items.length,
-            data: items
+            count: serializedItems.length,
+            totalItems,
+            totalPages,
+            currentPage: page,
+            data: serializedItems
         });
     } catch (error) {
         console.error("Get all items error:", error);
@@ -114,7 +158,7 @@ async function handleCreateItem(req, res) {
 
 async function handleUpdateItem(req, res) {
     try {
-        const { name, price, colors, stock, description, isAvailable } = req.body;
+        const { name, price, colors, stock, description, isAvailable, imageToRemove } = req.body;
         
         const item = await Item.findById(req.params.id);
         
@@ -152,7 +196,20 @@ async function handleUpdateItem(req, res) {
         if (description !== undefined) item.description = description;
         if (isAvailable !== undefined) item.isAvailable = Boolean(isAvailable);
 
-        // Handle multiple images for update
+        // Handle image removal
+        if (imageToRemove !== undefined) {
+            try {
+                const removeIndex = JSON.parse(imageToRemove);
+                if (removeIndex !== null && removeIndex >= 0 && removeIndex < item.images.length) {
+                    // Remove the image at the specified index
+                    item.images.splice(removeIndex, 1);
+                }
+            } catch (parseError) {
+                console.error("Error parsing imageToRemove:", parseError);
+            }
+        }
+
+        // Handle new images (replace the removed image)
         if (req.files && req.files.length > 0) {
             req.files.forEach(file => {
                 item.images.push({
@@ -206,10 +263,75 @@ async function handleDeleteItem(req, res) {
     }
 }
 
+async function handleAddToCart(req, res) {
+    try {
+        const { quantity } = req.body;
+        const itemId = req.params.id;
+
+        if (!quantity || quantity <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Quantity must be greater than 0'
+            });
+        }
+
+        const item = await Item.findById(itemId);
+        
+        if (!item) {
+            return res.status(404).json({
+                success: false,
+                message: 'Item not found'
+            });
+        }
+
+        if (!item.isAvailable) {
+            return res.status(400).json({
+                success: false,
+                message: 'Item is not available'
+            });
+        }
+
+        if (item.stock < quantity) {
+            return res.status(400).json({
+                success: false,
+                message: 'Insufficient stock available'
+            });
+        }
+
+        item.stock -= quantity;
+        
+        // Set isAvailable to false if stock reaches 0
+        if (item.stock === 0) {
+            item.isAvailable = false;
+        }
+        
+        await item.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Item added to cart successfully',
+            data: {
+                itemId: item._id,
+                quantity: quantity,
+                remainingStock: item.stock,
+                isAvailable: item.isAvailable
+            }
+        });
+    } catch (error) {
+        console.error("Add to cart error:", error);
+        res.status(500).json({
+            success: false,
+            message: 'Error adding item to cart',
+            error: error.message
+        });
+    }
+}
+
 module.exports = {
     handleGetAllItems,
     handleGetItemById,
     handleCreateItem,
     handleUpdateItem,
-    handleDeleteItem
+    handleDeleteItem,
+    handleAddToCart
 };

@@ -42,11 +42,11 @@ export default function Header() {
                         <span className="text-xl md:text-2xl font-bold tracking-widest text-amber-900">EVERLANE</span>
                     </Link>
                     <div className="flex items-center gap-2 md:gap-4 ">
-                        <button className="p-2 hover:bg-white/20 rounded-full " aria-label="Search">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-amber-900">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
-                            </svg>
+                        <NavLink to= "/listing">
+                        <button className="bg-trasparent text-amber-900 px-2 sm:px-6 py-1 font-medium text-sm sm:text-base rounded-lg tracking-wide shadow hover:bg-gray-300 transition">
+                            SHOP NOW
                         </button>
+                        </NavLink>
                         <NavLink to= "/profile">
                         <button className="p-2 hover:bg-white/20 rounded-full" aria-label="Account">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-amber-900">

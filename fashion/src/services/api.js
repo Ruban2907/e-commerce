@@ -34,13 +34,32 @@ api.interceptors.response.use(
 );
 
 export const itemsAPI = {
-  getAllItems: async () => {
-    const response = await api.get('/items');
+  getAllItems: async (page = 1, limit = 12) => {
+    const response = await api.get(`/items?page=${page}&limit=${limit}`);
     return response.data;
   },
 
   getItemById: async (id) => {
     const response = await api.get(`/items/${id}`);
+    return response.data;
+  },
+
+  addToCart: async (itemId, quantity) => {
+    const response = await api.post(`/items/${itemId}/add-to-cart`, { quantity });
+    return response.data;
+  },
+
+  deleteItem: async (itemId) => {
+    const response = await api.delete(`/items/${itemId}`);
+    return response.data;
+  },
+
+  updateItem: async (itemId, formData) => {
+    const response = await api.patch(`/items/${itemId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response.data;
   },
 };

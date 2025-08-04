@@ -5,6 +5,7 @@ import { usersAPI } from "../../services/api";
 
 const Create = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const editMode = location.state?.editMode || false;
   const userData = location.state?.userData || null;
   
