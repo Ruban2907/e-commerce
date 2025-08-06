@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {handleUserlogin, handleUserSignup, } = require("../controller/auth")
+const {handleUserlogin, handleUserSignup, handleForgotPassword, handleResetPassword} = require("../controller/auth")
 const {handleImageUpload, handleGetUserProfile, handleGetUserPicture, handleUpdateUserProfile, handleGetAllUsers, handleDeleteUser, handleCreateUser, handleUpdateUser} = require("../controller/uses")
 const { authenticate, requireAdmin, requireUser } = require("../middleware/authentication");
 const upload = require("../middleware/multer");
@@ -10,6 +10,8 @@ const { handleGetAllOrders, handleGetUserOrders, handleUpdateOrderStatus, handle
 
 router.post("/signup", upload.single("picture"), handleUserSignup)
 router.post("/login", handleUserlogin);
+router.post("/forgot-password", handleForgotPassword);
+router.post("/reset-password", handleResetPassword);
 router.post("/upload-image", upload.single("picture"), handleImageUpload);
 router.get("/profile", handleGetUserProfile);
 router.get("/profile-picture", handleGetUserPicture);

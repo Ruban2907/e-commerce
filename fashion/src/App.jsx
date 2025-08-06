@@ -15,7 +15,7 @@ import AddItemsPage from './page/addItems/index.jsx';
 import CartPage from './page/cart/index.jsx';
 import AdminOrdersPage from './page/admin/orders.jsx';
 import MyOrdersPage from './page/myOrders/index.jsx';
-import './App.css';
+import ForgotPassword from './page/forgotPassword/index.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const withLayout = (Component) => {
@@ -50,6 +50,7 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/sign" element={<Sign />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/stories" element={<BlogPage />} />

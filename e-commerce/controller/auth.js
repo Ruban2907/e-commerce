@@ -88,7 +88,51 @@ async function handleUserSignup(req,res) {
 
 
 
+async function handleForgotPassword(req, res) {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const foundUser = await User.findOne({ email: email });
+    if (!foundUser) {
+      return res.status(404).json({ message: "Email not found in our database" });
+    }
+
+    return res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({ message: "Internal server error during the email verification" });
+  }
+}
+
+async function handleResetPassword(req, res) {
+  try {
+    const { email, newPassword } = req.body;
+    if (!email || !newPassword) {
+      return res.status(400).json({ message: "Email and new password are required" });
+    }
+
+    const foundUser = await User.findOne({ email: email });
+    if (!foundUser) {
+      return res.status(404).json({ message: "Email not found in our database" });
+    }
+
+    const hashpass = await bcrypt.hash(newPassword, 10);
+    
+    await User.findByIdAndUpdate(foundUser._id, { password: hashpass });
+
+    return res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({ message: "Internal server error during password reset" });
+  }
+}
+
 module.exports = {
   handleUserlogin,
   handleUserSignup,
+  handleForgotPassword,
+  handleResetPassword,
 }

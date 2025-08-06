@@ -106,6 +106,16 @@ const LoginPage = () => {
                Sign Up
               </span>
             </div>
+            <div className="mt-4 text-center">
+              <span
+                className="text-sm text-blue-600 cursor-pointer hover:underline"
+                onClick={() => navigate("/forgot-password")}
+                tabIndex={0}
+                role="button"
+              >
+                Forgot Password?
+              </span>
+            </div>
           </div>
         </div>
         <div className="w-full md:flex-1 bg-gray-100 flex items-center justify-center order-2 md:order-none">
