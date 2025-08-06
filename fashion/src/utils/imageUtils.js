@@ -6,20 +6,16 @@ export const convertImageBufferToUrl = (imageBuffer) => {
     return null;
   }
   
-  // Handle different possible formats of image data
   let imageData = null;
   let contentType = null;
   
   if (imageBuffer.data) {
-    // Check if data is base64 string (from backend) or Buffer
     if (typeof imageBuffer.data === 'string') {
-      // Base64 string from backend
       imageData = imageBuffer.data;
       contentType = imageBuffer.contentType;
       console.log('Processing base64 image data, length:', imageData.length);
       
       try {
-        // Convert base64 to blob
         const byteCharacters = atob(imageData);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
@@ -35,16 +31,13 @@ export const convertImageBufferToUrl = (imageBuffer) => {
         return null;
       }
     } else {
-      // Standard format: { data: Buffer, contentType: string }
       imageData = imageBuffer.data;
       contentType = imageBuffer.contentType;
     }
   } else if (imageBuffer.buffer) {
-    // Alternative format: { buffer: Buffer, mimetype: string }
     imageData = imageBuffer.buffer;
     contentType = imageBuffer.mimetype;
   } else if (imageBuffer instanceof ArrayBuffer) {
-    // Direct ArrayBuffer
     imageData = imageBuffer;
     contentType = 'image/jpeg'; // Default
   } else {

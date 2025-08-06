@@ -15,11 +15,14 @@ const AdminPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [profilePictures, setProfilePictures] = useState({});
+
+  //extra condition not necessary
   React.useEffect(() => {
     if (!isAdmin()) {
       navigate('/home');
     }
   }, [navigate]);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -97,9 +100,7 @@ const AdminPage = () => {
     
     try {
       setDeletingUsers(prev => new Set(prev).add(userToDelete._id));
-      console.log('Deleting user:', userToDelete._id);
       const response = await usersAPI.deleteUser(userToDelete._id);
-      console.log('User deleted successfully:', response);
       toast.success("User Deleted Successfully!")
       const updatedResponse = await usersAPI.getAllUsers();
       if (updatedResponse.users) {
@@ -109,7 +110,6 @@ const AdminPage = () => {
       setShowDeleteModal(false);
       setUserToDelete(null);
     } catch (error) {
-      console.error('Error deleting user:', error);
       toast.error("Error deleting user!")
     } finally {
       setDeletingUsers(prev => {
@@ -128,13 +128,13 @@ const AdminPage = () => {
     navigate('/create-user');
   };
 
-  const clearError = () => {
-    setError(null);
-  };
+  // const clearError = () => {
+  //   setError(null);
+  // };
 
-  const clearSuccess = () => {
-    setSuccess(null);
-  };
+  // const clearSuccess = () => {
+  //   setSuccess(null);
+  // };
   if (!isAdmin()) {
     return null;
   }

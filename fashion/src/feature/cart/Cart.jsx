@@ -17,7 +17,6 @@ const Cart = () => {
   const [clearingCart, setClearingCart] = useState(false);
   const [imageCache, setImageCache] = useState({});
 
-  // Memoized function to get cached image URL
   const getCachedImageUrl = useCallback((itemId, images) => {
     const cacheKey = `${itemId}`;
     
@@ -29,7 +28,7 @@ const Cart = () => {
       return null;
     }
 
-    const imageUrl = getImageByIndex(images, 0); // Use first image for cart display
+    const imageUrl = getImageByIndex(images, 0);
     if (imageUrl) {
       setImageCache(prev => ({ ...prev, [cacheKey]: imageUrl }));
       return imageUrl;
@@ -57,7 +56,6 @@ const Cart = () => {
   }, []);
 
   useEffect(() => {
-    // Check if user is admin and redirect if so
     if (isAdmin()) {
       navigate('/admin/orders');
       return;
@@ -66,7 +64,6 @@ const Cart = () => {
     fetchCart();
   }, [fetchCart, navigate]);
 
-  // Cleanup image URLs on unmount
   useEffect(() => {
     return () => {
       Object.values(imageCache).forEach(url => {
@@ -82,9 +79,7 @@ const Cart = () => {
 
     try {
       const response = await cartAPI.updateCartItem(cartItemId, newQuantity);
-      
       if (response.success) {
-        // Refresh cart data
         await fetchCart();
       } else {
         alert(response.message || 'Failed to update quantity');
@@ -105,7 +100,6 @@ const Cart = () => {
       const response = await cartAPI.removeFromCart(cartItemId);
       
       if (response.success) {
-        // Refresh cart data
         await fetchCart();
       } else {
         alert(response.message || 'Failed to remove item');
@@ -179,7 +173,6 @@ const Cart = () => {
         key={item.cartItemId}
         className="flex flex-col md:flex-row bg-white rounded-lg shadow-md overflow-hidden border border-gray-200"
       >
-        {/* Image Section */}
         <div className="w-full md:w-48 h-48 md:h-auto relative">
           {currentImage && currentImage !== "No image uploaded" ? (
             <img
@@ -194,13 +187,11 @@ const Cart = () => {
             />
           ) : null}
           
-          {/* Fallback placeholder */}
           <div className="w-full h-full bg-gray-200 flex items-center justify-center" style={{ display: currentImage && currentImage !== "No image uploaded" ? 'none' : 'flex' }}>
             <span className="text-gray-500 text-sm">No image</span>
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="flex-1 p-6 flex flex-col justify-between">
           <div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">{item.name}</h3>
@@ -231,7 +222,6 @@ const Cart = () => {
             </div>
           </div>
 
-          {/* Quantity and Actions */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="flex items-center border border-gray-300 rounded-md">
@@ -283,7 +273,6 @@ const Cart = () => {
     );
   }, [getCachedImageUrl, updatingItems, removingItems, handleQuantityChange, handleRemoveItem]);
 
-  // Helper function to get color style
   const getColorStyle = (colorName) => {
     const colorMap = {
       'Black': '#000000',
@@ -357,7 +346,6 @@ const Cart = () => {
   return (
     <div className="py-20">
       <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
             <h1 className="text-4xl font-bold text-gray-900 mb-2">Shopping Cart</h1>
@@ -384,12 +372,10 @@ const Cart = () => {
           </div>
         </div>
 
-        {/* Cart Items */}
         <div className="grid gap-6 mb-8">
           {cart.items.map(renderCartItem)}
         </div>
 
-        {/* Order Summary */}
         <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
           
@@ -412,7 +398,6 @@ const Cart = () => {
             </div>
           </div>
 
-          {/* Confirm Order Button */}
           <button
             onClick={handleConfirmOrder}
             disabled={confirmingOrder || cart.items.length === 0}

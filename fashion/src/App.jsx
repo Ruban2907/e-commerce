@@ -18,7 +18,6 @@ import MyOrdersPage from './page/myOrders/index.jsx';
 import './App.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 const withLayout = (Component) => {
   return function WrappedComponent() {
     return (

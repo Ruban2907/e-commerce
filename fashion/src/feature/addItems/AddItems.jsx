@@ -36,18 +36,15 @@ const AddItems = () => {
 
     try {
       const formDataToSend = new FormData();
-      
-      // Add form fields
+
       formDataToSend.append('name', formData.name);
       formDataToSend.append('price', formData.price);
       formDataToSend.append('stock', formData.stock);
       formDataToSend.append('description', formData.description);
-      
-      // Handle colors - split by comma and trim
+
       const colorsArray = formData.colors.split(',').map(color => color.trim()).filter(color => color);
       formDataToSend.append('colors', JSON.stringify(colorsArray));
       
-      // Add images
       images.forEach((image, index) => {
         formDataToSend.append('images', image);
       });
@@ -55,7 +52,7 @@ const AddItems = () => {
       const response = await itemsAPI.createItem(formDataToSend);
 
       if (response.success) {
-        navigate('/listing'); // Redirect to listing page
+        navigate('/listing');
         toast.success('Item Added Successfully!');
       }
     } catch (error) {
@@ -68,7 +65,6 @@ const AddItems = () => {
 
   return (
     <div className="w-full min-h-screen flex flex-col md:flex-row bg-gray-50">
-      {/* Form Section - Left Side */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-4 md:p-8">
         <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
           <h1 className="text-5xl font-bold text-center mb-2">Add Item</h1>
@@ -170,8 +166,6 @@ const AddItems = () => {
           </form>
         </div>
       </div>
-
-        {/* Image Section - Right Side */}
         <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8 bg-gray-50">
           <div className="w-full max-w-lg">
             <img

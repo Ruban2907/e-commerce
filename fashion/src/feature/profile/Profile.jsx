@@ -61,7 +61,6 @@ export default function Profile() {
 
   const handleEdit = () => {
     setEditMode(true);
-    // Store current data as original when entering edit mode
     setOriginalUserData({...userData});
     setOriginalProfilePicture(profilePicture);
   };
@@ -115,7 +114,6 @@ export default function Profile() {
         setOriginalProfilePicture(newPictureUrl);
       }
       toast.success("Profile updated successfully!")
-      //alert(data.message || 'Profile updated successfully!');
     } catch (err) {
       toast.error("Profile update error!")
       console.error('Profile update error:', err);
@@ -133,13 +131,13 @@ export default function Profile() {
     setEditMode(false);
   };
 
-//   if (loading) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-//         <div className="text-lg">Loading profile...</div>
-//       </div>
-//     );
-//   }
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+        <div className="text-lg">Loading profile...</div>
+      </div>
+    );
+  }
 
      return (
      <div className="min-h-screen flex items-center justify-center py-10 md:py-20 bg-gray-50 px-4">
@@ -209,13 +207,6 @@ export default function Profile() {
                      placeholder="Address"
                      rows="3"
                    />
-                   {/* <input
-                     name="Role"
-                     value={userData.role}
-                     onChange={handleInputChange}
-                     className="border rounded px-2 py-1 mb-2 w-full"
-                     placeholder="New password (optional)"
-                   /> */}
                  </>
                ) : (
                  <>
@@ -279,7 +270,7 @@ export default function Profile() {
              </button>
            )}
         </div>
-                 <div className="flex-1 flex items-center justify-center min-h-[400px] md:min-h-[500px] lg:min-h-[600px]">
+         <div className="flex-1 flex items-center justify-center min-h-[400px] md:min-h-[500px] lg:min-h-[600px]">
            <div className="bg-gray-200 rounded-xl w-full h-full max-w-2xl aspect-[4/3] md:aspect-[3/2] lg:aspect-[2/1] flex items-center justify-center border-2 overflow-hidden relative">
              <img 
                src="/assets/profile.png" 

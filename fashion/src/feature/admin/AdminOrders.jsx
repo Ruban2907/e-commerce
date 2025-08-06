@@ -61,8 +61,7 @@ const AdminOrders = () => {
           order._id === orderId ? response.data : order
         ));
         setSuccess('Order status updated successfully');
-        fetchStats(); // Refresh stats
-        // Auto-reload orders after status update
+        fetchStats(); 
         fetchOrders();
       } else {
         setError(response.message || 'Failed to update order status');
@@ -123,7 +122,6 @@ const AdminOrders = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Back Button */}
       <button
           className="mb-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
           onClick={() => navigate('/admin')}>
@@ -134,7 +132,6 @@ const AdminOrders = () => {
           <p className="text-gray-600">View and manage all customer orders</p>
         </div>
 
-        {/* Stats Cards */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
             <div className="bg-white p-4 rounded-lg shadow">
@@ -163,8 +160,6 @@ const AdminOrders = () => {
             </div>
           </div>
         )}
-
-        {/* Messages */}
         {error && (
           <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative">
             <span className="block sm:inline">{error}</span>
@@ -189,7 +184,6 @@ const AdminOrders = () => {
           </div>
         )}
 
-        {/* Filter */}
         <div className="mb-6">
           <label htmlFor="status-filter" className="block text-sm font-medium text-gray-700 mb-2">
             Filter by Status
@@ -209,7 +203,6 @@ const AdminOrders = () => {
           </select>
         </div>
 
-        {/* Orders List */}
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           {filteredOrders.length === 0 ? (
             <div className="text-center py-12">
@@ -249,7 +242,6 @@ const AdminOrders = () => {
                         </div>
                       </div>
                       
-                      {/* Order Items */}
                       <div className="mt-3">
                         <h4 className="text-sm font-medium text-gray-900 mb-2">Items:</h4>
                         <div className="space-y-2">
@@ -271,7 +263,6 @@ const AdminOrders = () => {
                       </div>
                     </div>
                     
-                    {/* Status Update */}
                     <div className="ml-6 flex-shrink-0">
                       <select
                         value={order.status}
