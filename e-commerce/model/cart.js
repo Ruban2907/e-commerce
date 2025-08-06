@@ -43,13 +43,12 @@ const cartSchema = new mongoose.Schema({
   }
 });
 
-// Update the updatedAt field before saving
+
 cartSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Calculate total amount before saving
 cartSchema.pre('save', function(next) {
   this.totalAmount = this.items.reduce((total, item) => {
     return total + (item.price * item.quantity);

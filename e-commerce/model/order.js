@@ -55,7 +55,6 @@ const orderSchema = new mongoose.Schema({
   }
 });
 
-// Index for better query performance
 orderSchema.index({ userId: 1, orderDate: -1 });
 orderSchema.index({ status: 1 });
 
