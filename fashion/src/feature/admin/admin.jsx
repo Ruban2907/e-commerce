@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { isAdmin } from '../../utils/userUtils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { usersAPI } from '../../services/api';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AdminPage = () => {
   const navigate = useNavigate();
@@ -52,7 +53,6 @@ const AdminPage = () => {
         }
       } catch (error) {
         console.error('Error fetching users:', error);
-        setError('Failed to fetch users. Please try again.');
         setUsers([]);
       } finally {
         setLoading(false);
@@ -81,7 +81,6 @@ const AdminPage = () => {
     setSuccess(null);
     
     if (user.role === 'admin') {
-      setError('Cannot delete admin users. Only regular users can be deleted.');
       return;
     }
     // if (user._id === currentUserInfo._id) {
@@ -101,7 +100,7 @@ const AdminPage = () => {
       console.log('Deleting user:', userToDelete._id);
       const response = await usersAPI.deleteUser(userToDelete._id);
       console.log('User deleted successfully:', response);
-      
+      toast.success("User Deleted Successfully!")
       const updatedResponse = await usersAPI.getAllUsers();
       if (updatedResponse.users) {
         setUsers(updatedResponse.users);
@@ -109,10 +108,9 @@ const AdminPage = () => {
       
       setShowDeleteModal(false);
       setUserToDelete(null);
-      setSuccess('User deleted successfully!');
     } catch (error) {
       console.error('Error deleting user:', error);
-      setError('Failed to delete user. Please try again.');
+      toast.error("Error deleting user!")
     } finally {
       setDeletingUsers(prev => {
         const newSet = new Set(prev);
@@ -157,51 +155,22 @@ const AdminPage = () => {
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-            <button
-              onClick={handleCreateUser}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200 font-medium"
-            >
-              Create User
-            </button>
+            <div className="flex gap-4">
+              <Link
+                to="/admin/orders"
+                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+              >
+                View Orders
+              </Link>
+              <button
+                onClick={handleCreateUser}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Create User
+              </button>
+            </div>
           </div>
-          <p className="text-gray-600 mt-2">Manage all registered users in the system</p>
         </div>
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex justify-between items-start">
-              <div className="flex">
-                <svg className="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-                <span className="text-red-800">{error}</span>
-              </div>
-              <button
-                onClick={clearError}
-                className="text-red-600 hover:text-red-800 text-sm font-medium"
-              >
-                Dismiss
-              </button>
-            </div>
-          </div>
-        )}
-        {success && (
-          <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
-            <div className="flex justify-between items-start">
-              <div className="flex">
-                <svg className="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM16.707 7.293a1 1 0 00-1.414-1.414L9 10.586 7.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l6-6z" clipRule="evenodd" />
-                </svg>
-                <span className="text-green-800">{success}</span>
-              </div>
-              <button
-                onClick={clearSuccess}
-                className="text-green-600 hover:text-green-800 text-sm font-medium"
-              >
-                Dismiss
-              </button>
-            </div>
-          </div>
-        )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {users.map((user) => (
             <div key={user._id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-200">
@@ -238,7 +207,7 @@ const AdminPage = () => {
                     {user.firstname} {user.lastname}
                   </h3>
                   <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
-                    user.role === 'admin' 
+                    user.role === 'admin'     
                       ? 'bg-red-100 text-red-800' 
                       : 'bg-green-100 text-green-800'
                   }`}>
@@ -273,7 +242,7 @@ const AdminPage = () => {
                   {user.gender || 'Not specified'}
                 </div>
               </div>
-                                 <div className="flex gap-2 pt-4 border-t border-gray-200">
+                <div className="flex gap-2 pt-4 border-t border-gray-200">
                   <button
                     onClick={() => handleEditUser(user._id)}
                     className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition duration-200 text-sm font-medium"

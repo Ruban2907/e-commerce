@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Profile() {
   const [userData, setUserData] = useState({
@@ -33,7 +35,7 @@ export default function Profile() {
         }
         return res.json();
       })
-             .then(data => {
+      .then(data => {
          if (data.user) {
            setUserData(data.user);
            setOriginalUserData(data.user);
@@ -98,6 +100,7 @@ export default function Profile() {
       
       if (!res.ok) {
         const errorData = await res.json();
+        toast.error("Profile update error!");
         throw new Error(errorData.message || 'Failed to update profile');
       }
       
@@ -111,11 +114,11 @@ export default function Profile() {
         setProfilePicture(newPictureUrl);
         setOriginalProfilePicture(newPictureUrl);
       }
-      
-      alert(data.message || 'Profile updated successfully!');
+      toast.success("Profile updated successfully!")
+      //alert(data.message || 'Profile updated successfully!');
     } catch (err) {
+      toast.error("Profile update error!")
       console.error('Profile update error:', err);
-      alert(err.message || 'Error updating profile. Please try again.');
     }
   };
 
@@ -149,7 +152,7 @@ export default function Profile() {
                 alt="Profile"
                 className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
                 onError={(e) => {
-                  e.target.src = "/assets/profile.png";
+                  e.target.src = "/assets/avatar.png";
                 }}
               />
               {editMode && (
@@ -252,7 +255,7 @@ export default function Profile() {
                <span className="text-gray-700 text-sm capitalize">{userData.role}</span>
              </div>
            </div>
-                     {editMode ? (
+            {editMode ? (
              <div className="flex gap-3 mt-6">
                <button
                  onClick={handleSave}
@@ -267,7 +270,7 @@ export default function Profile() {
                  Cancel
                </button>
              </div>
-           ) : (
+           )  : (
              <button
                onClick={handleEdit}
                className="w-full mt-6 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded transition"

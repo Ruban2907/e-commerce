@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { data, useNavigate } from "react-router-dom";
 import { setUserInfo } from "../../utils/userUtils";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignInPage = () => {
   const [form, setForm] = useState({ 
@@ -48,7 +49,6 @@ const SignInPage = () => {
     }
     const regex= /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!4@$%^&*-]).{8,}$/;
     if (!regex.test(form.password)) {
-      console.log("dfghj");
       setError("Password must contain at least one capital letter and one special character.");
       return;
     }
@@ -86,10 +86,12 @@ const SignInPage = () => {
           console.log("User info stored successfully");
         }
         navigate("/");
+        toast.success("Registered Successfully!")
       }) 
       .catch((err) => {
         console.error("Error: ", err);
         setError("Signup failed. Please try again.");
+        toast.error("Signup failed.")
       });
   };
 

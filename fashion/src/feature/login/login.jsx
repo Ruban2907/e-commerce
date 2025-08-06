@@ -1,6 +1,8 @@
 import React, { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setUserInfo } from "../../utils/userUtils";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -31,19 +33,19 @@ const LoginPage = () => {
       })
       .then((data) => {
         console.log("Response: ", data);
-        if (data.token) {
+        if (data?.token && data?.foundUser) {
           localStorage.setItem('token', data.token);
-          console.log("Token stored successfully");
-        }
-        if (data.foundUser) {
           setUserInfo(data.foundUser);
-          console.log("User info stored successfully");
+          console.log("Token stored successfully");
+          toast.success("Logged In successfully!");
+          navigate("/home");
         }
-        navigate("/home");
+        
       })
       .catch((err) => {
         console.error("Error: ", err);
         setError("login failed. Please try again.");
+        toast.error("Log In Failed!");
       });
     
   };
@@ -55,6 +57,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <ToastContainer />
       <div className="flex flex-col md:flex-row w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-xl overflow-hidden">
         <div className="flex flex-col justify-center items-center w-full md:max-w-md px-4 sm:px-8 py-8 sm:py-12 order-1 md:order-none">
           <div className="w-full max-w-sm">

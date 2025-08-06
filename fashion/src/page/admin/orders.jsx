@@ -1,12 +1,12 @@
 import React from 'react';
-import AdminPage from '../../feature/admin/admin';
+import AdminOrders from '../../feature/admin/AdminOrders';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-const Admin = () => (
+const AdminOrdersPage = () => (
   <div>
     <ToastContainer/>
-    <AdminPage />
+    <AdminOrders />
   </div>
 );
 
-export default Admin; 
+export default AdminOrdersPage; 

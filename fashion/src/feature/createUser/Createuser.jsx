@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { usersAPI } from "../../services/api";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Create = () => {
   const navigate = useNavigate();
@@ -104,25 +105,26 @@ const Create = () => {
       if (editMode) {
         response = await usersAPI.updateUser(userData._id, formData);
         console.log("User updated successfully:", response);
-        alert("User updated successfully!");
       } else {
         response = await usersAPI.createUser(formData);
         console.log("User created successfully:", response);
-        alert("User created successfully!");
       }
       
       navigate("/admin");
+      if (editMode) {
+        toast.success("User updated successfully!");
+      } else {
+        toast.success("User created successfully!");
+      }
     } catch (err) {
-      console.error(editMode ? "Error updating user:" : "Error creating user:", err);
-      setError(err.response?.data?.message || (editMode ? "Update failed. Please try again." : "Creation failed. Please try again."));
+      toast.error(editMode ? "Error updating user!" : "Error creating user!");
     }
   };
 
   const handleLoginClick = (e) => {
     e.preventDefault();
-    navigate("/admin");
+      navigate("/admin");
   };
-
 
 
   return (
@@ -287,6 +289,7 @@ const Create = () => {
         </div>
       </div>
     </div>
+    
   );
 };
 

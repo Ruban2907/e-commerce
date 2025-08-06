@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { itemsAPI } from "../../services/api";
 import { getImageByIndex, revokeImageUrl } from "../../utils/imageUtils";
 import { isAdmin, clearUserInfo } from "../../utils/userUtils";
+import { toast } from "react-toastify";
+
 const List = () => {
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -185,7 +189,14 @@ const List = () => {
   }, []);
 
   const handleAddToCart = useCallback(async (item) => {
+    // Check if user is admin and prevent adding to cart
+    if (isAdmin()) {
+      alert('Admin users cannot add items to cart. Please use a regular user account.');
+      return;
+    }
+
     const quantity = itemCounters[item._id] || 0;
+    const selectedColor = getCurrentColor(item);
     
     if (quantity <= 0) {
       alert('Please select a quantity greater than 0');
@@ -200,7 +211,7 @@ const List = () => {
     setAddingToCart(prev => ({ ...prev, [item._id]: true }));
 
     try {
-      const response = await itemsAPI.addToCart(item._id, quantity);
+      const response = await itemsAPI.addToCart(item._id, quantity, selectedColor);
       
       if (response.success) {
         setItems(prev => prev.map(prevItem => 
@@ -220,7 +231,7 @@ const List = () => {
     } finally {
       setAddingToCart(prev => ({ ...prev, [item._id]: false }));
     }
-  }, [itemCounters]);
+  }, [itemCounters, getCurrentColor]);
 
   const handleEditItem = useCallback((item) => {
     setItemToEdit(item);
@@ -251,16 +262,16 @@ const List = () => {
       
       if (response.success) {
         setItems(prev => prev.filter(prevItem => prevItem._id !== itemToDelete._id));
-        alert('Item deleted successfully!');
         setShowDeleteModal(false);
         setItemToDelete(null);
       } else {
-        alert(response.message || 'Failed to delete item');
+        console.log(response.message || 'Failed to delete item');
       }
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to delete item');
+      console.log(err.response?.data?.message || 'Failed to delete item');
     } finally {
       setDeletingItem(false);
+      toast.success("Item deleted Successfully!");
     }
   }, [itemToDelete]);
 
@@ -343,7 +354,6 @@ const List = () => {
             ? { ...prevItem, ...response.data }
             : prevItem
         ));
-        alert('Item updated successfully!');
         setShowEditModal(false);
         setItemToEdit(null);
         setEditForm({
@@ -357,10 +367,10 @@ const List = () => {
         setNewImages([]);
         setImageToRemove(null);
       } else {
-        alert(response.message || 'Failed to update item');
+        console.log(response.message || 'Failed to update item');
       }
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update item');
+      console.log(err.response?.data?.message || 'Failed to update item');
     } finally {
       setEditingItem(false);
     }
@@ -564,42 +574,45 @@ const List = () => {
           )}
         </div>
 
-        <div className="px-4 mb-4">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => handleAddToCart(item)}
-              disabled={!isItemAvailable || counter <= 0 || isAddingToCart}
-              className={`flex-1 py-3 px-6 rounded-md font-semibold transition-colors duration-200 ${
-                isItemAvailable && counter > 0 && !isAddingToCart
-                  ? 'bg-black text-white hover:bg-gray-800'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
-            >
-              {isAddingToCart ? 'Adding...' : isItemAvailable ? 'Add to Cart' : 'Out of Stock'}
-            </button>
+        {/* Only show add to cart UI for non-admin users */}
+        {!isAdmin() && (
+          <div className="px-4 mb-4">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => handleAddToCart(item)}
+                disabled={!isItemAvailable || counter <= 0 || isAddingToCart}
+                className={`flex-1 py-3 px-6 rounded-md font-semibold transition-colors duration-200 ${
+                  isItemAvailable && counter > 0 && !isAddingToCart
+                    ? 'bg-black text-white hover:bg-gray-800'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                {isAddingToCart ? 'Adding...' : isItemAvailable ? 'Add to Cart' : 'Out of Stock'}
+              </button>
 
-            {/* Counter */}
-            <div className="flex items-center border border-gray-300 rounded-md">
-              <button
-                onClick={() => handleCounterChange(item._id, -1)}
-                disabled={counter <= 0 || !isItemAvailable}
-                className="px-3 py-2 text-gray-600 hover:text-black disabled:text-gray-300 disabled:cursor-not-allowed"
-              >
-                -
-              </button>
-              <span className="px-4 py-2 border-x border-gray-300 min-w-[3rem] text-center">
-                {counter}
-              </span>
-              <button
-                onClick={() => handleCounterChange(item._id, 1)}
-                disabled={counter >= item.stock || !isItemAvailable}
-                className="px-3 py-2 text-gray-600 hover:text-black disabled:text-gray-300 disabled:cursor-not-allowed"
-              >
-                +
-              </button>
+              {/* Counter */}
+              <div className="flex items-center border border-gray-300 rounded-md">
+                <button
+                  onClick={() => handleCounterChange(item._id, -1)}
+                  disabled={counter <= 0 || !isItemAvailable}
+                  className="px-3 py-2 text-gray-600 hover:text-black disabled:text-gray-300 disabled:cursor-not-allowed"
+                >
+                  -
+                </button>
+                <span className="px-4 py-2 border-x border-gray-300 min-w-[3rem] text-center">
+                  {counter}
+                </span>
+                <button
+                  onClick={() => handleCounterChange(item._id, 1)}
+                  disabled={counter >= item.stock || !isItemAvailable}
+                  className="px-3 py-2 text-gray-600 hover:text-black disabled:text-gray-300 disabled:cursor-not-allowed"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }, [getCurrentImage, getCurrentColor, selectedColorIndexes, handleColorSelect, itemCounters, addingToCart, handleCounterChange, handleAddToCart, handleEditItem, handleDeleteItem]);
@@ -638,12 +651,12 @@ const List = () => {
       {isAdmin() && (
         <div className="flex justify-end px-8 ">
           <button
+            onClick={() => navigate('/add-items')}
             className="px-12 py-3 bg-black text-white rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Add
+            Add Items
           </button>
         </div>
-
       )}
       <p className="text-4xl font-bold px-8 mb-4">Featured</p>
       

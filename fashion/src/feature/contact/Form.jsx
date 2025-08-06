@@ -1,5 +1,6 @@
 import React from "react";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Form = () => {
   return (
@@ -16,7 +17,9 @@ const Form = () => {
         <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
           <h1 className="text-5xl font-bold text-center mb-2">EverLane</h1>
           <h2 className="text-2xl text-center mb-8 text-gray-600">Complaints and Suggestions Box</h2>
-          <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Form submitted'); }}>
+          <form className="space-y-4" onSubmit={(e) => { 
+            toast.success("Submitted Successfully!");
+            e.preventDefault(); }}>
             <div>
               <label className="block font-medium mb-1">Name</label>
               <input

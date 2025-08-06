@@ -44,8 +44,8 @@ export const itemsAPI = {
     return response.data;
   },
 
-  addToCart: async (itemId, quantity) => {
-    const response = await api.post(`/items/${itemId}/add-to-cart`, { quantity });
+  addToCart: async (itemId, quantity, selectedColor) => {
+    const response = await api.post(`/items/${itemId}/add-to-cart`, { quantity, selectedColor });
     return response.data;
   },
 
@@ -60,6 +60,64 @@ export const itemsAPI = {
         'Content-Type': 'multipart/form-data',
       },
     });
+    return response.data;
+  },
+
+  createItem: async (formData) => {
+    const response = await api.post('/items', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+};
+
+export const cartAPI = {
+  getCart: async () => {
+    const response = await api.get('/cart');
+    return response.data;
+  },
+
+  updateCartItem: async (cartItemId, quantity) => {
+    const response = await api.patch(`/cart/${cartItemId}`, { quantity });
+    return response.data;
+  },
+
+  removeFromCart: async (cartItemId) => {
+    const response = await api.delete(`/cart/${cartItemId}`);
+    return response.data;
+  },
+
+  confirmOrder: async () => {
+    const response = await api.post('/cart/confirm-order');
+    return response.data;
+  },
+
+  clearCart: async () => {
+    const response = await api.delete('/cart');
+    return response.data;
+  },
+};
+
+export const orderAPI = {
+  getUserOrders: async () => {
+    const response = await api.get('/orders');
+    return response.data;
+  },
+
+  getAllOrders: async () => {
+    const response = await api.get('/admin/orders');
+    return response.data;
+  },
+
+  updateOrderStatus: async (orderId, status) => {
+    const response = await api.patch(`/admin/orders/${orderId}/status`, { status });
+    return response.data;
+  },
+
+  getOrderStats: async () => {
+    const response = await api.get('/admin/orders/stats');
     return response.data;
   },
 };

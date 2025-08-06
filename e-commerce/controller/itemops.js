@@ -130,11 +130,25 @@ async function handleCreateItem(req, res) {
             });
         }
 
+        // Parse colors if it's a JSON string
+        let parsedColors = colors;
+        if (typeof colors === 'string') {
+            try {
+                parsedColors = JSON.parse(colors);
+            } catch (error) {
+                console.error('Error parsing colors JSON:', error);
+                parsedColors = [colors]; // Fallback to single color
+            }
+        }
+        
+        // Ensure colors is always an array
+        const colorsArray = Array.isArray(parsedColors) ? parsedColors : [parsedColors];
+
         const newItem = new Item({
             name,
             images,
             price: Number(price),
-            colors: Array.isArray(colors) ? colors : [colors],
+            colors: colorsArray,
             stock: Number(stock),
             description: description || ""
         });
@@ -181,7 +195,19 @@ async function handleUpdateItem(req, res) {
             item.price = numPrice;
         }
         if (colors !== undefined) {
-            item.colors = Array.isArray(colors) ? colors : [colors];
+            // Parse colors if it's a JSON string
+            let parsedColors = colors;
+            if (typeof colors === 'string') {
+                try {
+                    parsedColors = JSON.parse(colors);
+                } catch (error) {
+                    console.error('Error parsing colors JSON:', error);
+                    parsedColors = [colors]; // Fallback to single color
+                }
+            }
+            
+            // Ensure colors is always an array
+            item.colors = Array.isArray(parsedColors) ? parsedColors : [parsedColors];
         }
         if (stock !== undefined) {
             const numStock = Number(stock);
@@ -263,75 +289,12 @@ async function handleDeleteItem(req, res) {
     }
 }
 
-async function handleAddToCart(req, res) {
-    try {
-        const { quantity } = req.body;
-        const itemId = req.params.id;
 
-        if (!quantity || quantity <= 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Quantity must be greater than 0'
-            });
-        }
-
-        const item = await Item.findById(itemId);
-        
-        if (!item) {
-            return res.status(404).json({
-                success: false,
-                message: 'Item not found'
-            });
-        }
-
-        if (!item.isAvailable) {
-            return res.status(400).json({
-                success: false,
-                message: 'Item is not available'
-            });
-        }
-
-        if (item.stock < quantity) {
-            return res.status(400).json({
-                success: false,
-                message: 'Insufficient stock available'
-            });
-        }
-
-        item.stock -= quantity;
-        
-        // Set isAvailable to false if stock reaches 0
-        if (item.stock === 0) {
-            item.isAvailable = false;
-        }
-        
-        await item.save();
-
-        res.status(200).json({
-            success: true,
-            message: 'Item added to cart successfully',
-            data: {
-                itemId: item._id,
-                quantity: quantity,
-                remainingStock: item.stock,
-                isAvailable: item.isAvailable
-            }
-        });
-    } catch (error) {
-        console.error("Add to cart error:", error);
-        res.status(500).json({
-            success: false,
-            message: 'Error adding item to cart',
-            error: error.message
-        });
-    }
-}
 
 module.exports = {
     handleGetAllItems,
     handleGetItemById,
     handleCreateItem,
     handleUpdateItem,
-    handleDeleteItem,
-    handleAddToCart
+    handleDeleteItem
 };
