@@ -166,7 +166,7 @@ const AddItems = () => {
           </form>
         </div>
       </div>
-        <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-8 bg-gray-50">
+        <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:p-8 bg-gray-50">
           <div className="w-full max-w-lg">
             <img
               src="public/assets/additems.png"

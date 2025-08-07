@@ -85,9 +85,6 @@ async function handleUserSignup(req,res) {
     }
 }
 
-
-
-
 async function handleForgotPassword(req, res) {
   try {
     const { email } = req.body;

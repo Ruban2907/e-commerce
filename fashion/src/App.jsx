@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Sign from './page/sign-up/index.jsx';
 import Login from './page/login/index.jsx';
 import Index from './page/home';
@@ -16,8 +16,20 @@ import CartPage from './page/cart/index.jsx';
 import AdminOrdersPage from './page/admin/orders.jsx';
 import MyOrdersPage from './page/myOrders/index.jsx';
 import ForgotPassword from './page/forgotPassword/index.jsx';
+import Error from './page/Error/index.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getUserInfo } from './utils/userUtils';
+import React from 'react';
+
+const PrivateRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
+
 const withLayout = (Component) => {
   return function WrappedComponent() {
     return (
@@ -46,23 +58,24 @@ const MyOrdersPageWithLayout = withLayout(MyOrdersPage);
 export default function AppRoutes() {
   return (
     <BrowserRouter>
-    <ToastContainer/  >
+      <ToastContainer/>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/sign" element={<Sign />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/stories" element={<BlogPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/listing" element={<ListingPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/create-user" element={<CreateUser />} />
-        <Route path="/add-items" element={<AddItemsPageWithLayout />} />
-        <Route path="/cart" element={<CartPageWithLayout />} />
-        <Route path="/my-orders" element={<MyOrdersPageWithLayout />} />
-        <Route path="/admin/orders" element={<AdminOrdersPageWithLayout />} />
+        <Route path="/home" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+        <Route path="/about" element={<PrivateRoute><AboutPage /></PrivateRoute>} />
+        <Route path="/stories" element={<PrivateRoute><BlogPage /></PrivateRoute>} />
+        <Route path="/contact" element={<PrivateRoute><ContactPage /></PrivateRoute>} />
+        <Route path="/listing" element={<PrivateRoute><ListingPage /></PrivateRoute>} />
+        <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
+        <Route path="/create-user" element={<PrivateRoute><CreateUser /></PrivateRoute>} />
+        <Route path="/add-items" element={<PrivateRoute><AddItemsPageWithLayout /></PrivateRoute>} />
+        <Route path="/cart" element={<PrivateRoute><CartPageWithLayout /></PrivateRoute>} />
+        <Route path="/my-orders" element={<PrivateRoute><MyOrdersPageWithLayout /></PrivateRoute>} />
+        <Route path="/admin/orders" element={<PrivateRoute><AdminOrdersPageWithLayout /></PrivateRoute>} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </BrowserRouter>
   );
