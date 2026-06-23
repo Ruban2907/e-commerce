@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { isAdmin } from '../../utils/userUtils';
 import { useNavigate, Link } from 'react-router-dom';
-import { usersAPI } from '../../services/api';
+import { usersAPI, API_BASE_URL } from '../../services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -46,7 +46,7 @@ const AdminPage = () => {
           
           response.users.forEach(user => {
             if (user.picture && user.picture.data) {
-              pictureUrls[user._id] = `http://localhost:8002/profile-picture?token=${encodeURIComponent(token)}&userId=${user._id}`;
+              pictureUrls[user._id] = `${API_BASE_URL}/profile-picture?token=${encodeURIComponent(token)}&userId=${user._id}`;
             }
           });  
           setProfilePictures(pictureUrls);

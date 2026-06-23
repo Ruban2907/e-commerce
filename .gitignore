@@ -1,0 +1,11 @@
+# Dependency directories
+node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+
+# Environment files
+.env
+e-commerce/.env
+fashion/.env

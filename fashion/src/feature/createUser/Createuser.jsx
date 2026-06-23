@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { usersAPI } from "../../services/api";
+import { usersAPI, API_BASE_URL } from "../../services/api";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -37,7 +37,7 @@ const Create = () => {
       
       if (userData.picture && userData.picture.data) {
         const token = localStorage.getItem('token');
-        setCurrentProfilePicture(`http://localhost:8002/profile-picture?token=${encodeURIComponent(token)}&userId=${userData._id}`);
+        setCurrentProfilePicture(`${API_BASE_URL}/profile-picture?token=${encodeURIComponent(token)}&userId=${userData._id}`);
       }
     }
   }, [editMode, userData]);

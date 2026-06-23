@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { setUserInfo } from "../../utils/userUtils";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_BASE_URL } from "../../services/api";
 
 const LoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -20,7 +21,7 @@ const LoginPage = () => {
       setError("All fields are required.");
       return;
     }
-    fetch("http://localhost:8002/login", {
+    fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),

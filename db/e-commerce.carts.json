@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "6a3a5d0e87ad5277e031c90f"
+  },
+  "userId": {
+    "$oid": "6a3a5cc987ad5277e031c8f4"
+  },
+  "items": [],
+  "totalAmount": 0,
+  "createdAt": {
+    "$date": "2026-06-23T10:16:46.136Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-23T10:49:46.231Z"
+  },
+  "__v": 7
+}]

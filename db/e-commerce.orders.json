@@ -1,0 +1,72 @@
+[{
+  "_id": {
+    "$oid": "6a3a5d1987ad5277e031c931"
+  },
+  "userId": {
+    "$oid": "6a3a5cc987ad5277e031c8f4"
+  },
+  "items": [
+    {
+      "itemId": {
+        "$oid": "6a3a5c6887ad5277e031c8cb"
+      },
+      "quantity": 3,
+      "selectedColor": "blue",
+      "price": 123,
+      "itemName": "shirt",
+      "_id": {
+        "$oid": "6a3a5d1987ad5277e031c932"
+      }
+    },
+    {
+      "itemId": {
+        "$oid": "6a3a5c8b87ad5277e031c8d5"
+      },
+      "quantity": 2,
+      "selectedColor": "simple",
+      "price": 123,
+      "itemName": "shirt",
+      "_id": {
+        "$oid": "6a3a5d1987ad5277e031c933"
+      }
+    }
+  ],
+  "totalAmount": 615,
+  "status": "pending",
+  "shippingAddress": "Not specified",
+  "paymentMethod": "Not specified",
+  "orderDate": {
+    "$date": "2026-06-23T10:16:57.922Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a3a64ca87ad5277e031cb0d"
+  },
+  "userId": {
+    "$oid": "6a3a5cc987ad5277e031c8f4"
+  },
+  "items": [
+    {
+      "itemId": {
+        "$oid": "6a3a647e87ad5277e031ca6a"
+      },
+      "quantity": 3,
+      "selectedColor": "black",
+      "price": 120,
+      "itemName": "jacket",
+      "_id": {
+        "$oid": "6a3a64ca87ad5277e031cb0e"
+      }
+    }
+  ],
+  "totalAmount": 360,
+  "status": "confirmed",
+  "shippingAddress": "Not specified",
+  "paymentMethod": "Not specified",
+  "orderDate": {
+    "$date": "2026-06-23T10:49:46.226Z"
+  },
+  "__v": 0
+}]

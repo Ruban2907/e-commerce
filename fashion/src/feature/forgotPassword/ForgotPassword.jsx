@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_BASE_URL } from "../../services/api";
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1); // 1: email, 2: new password
@@ -23,7 +24,7 @@ const ForgotPassword = () => {
     setError("");
     
     try {
-      const response = await fetch("http://localhost:8002/forgot-password", {
+      const response = await fetch(`${API_BASE_URL}/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -68,7 +69,7 @@ const ForgotPassword = () => {
     setError("");
     
     try {
-      const response = await fetch("http://localhost:8002/reset-password", {
+      const response = await fetch(`${API_BASE_URL}/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, newPassword }),

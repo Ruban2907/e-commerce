@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE_URL } from "../../services/api";
 
 export default function Profile() {
   const [userData, setUserData] = useState({
@@ -24,7 +25,7 @@ export default function Profile() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      fetch(`http://localhost:8002/profile`, {
+      fetch(`${API_BASE_URL}/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -40,7 +41,7 @@ export default function Profile() {
            setUserData(data.user);
            setOriginalUserData(data.user);
            if (data.user.picture) {
-             const pictureUrl = `http://localhost:8002/profile-picture?token=${encodeURIComponent(token)}`;
+             const pictureUrl = `${API_BASE_URL}/profile-picture?token=${encodeURIComponent(token)}`;
              setProfilePicture(pictureUrl);
              setOriginalProfilePicture(pictureUrl);
            }
@@ -89,7 +90,7 @@ export default function Profile() {
     if (newProfilePicture) formData.append('picture', newProfilePicture);
 
     try {
-      const res = await fetch('http://localhost:8002/profile', {
+      const res = await fetch(`${API_BASE_URL}/profile`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -109,7 +110,7 @@ export default function Profile() {
       setEditMode(false);
       setNewProfilePicture(null);
       if (newProfilePicture) {
-        const newPictureUrl = `http://localhost:8002/profile-picture?token=${encodeURIComponent(token)}&t=${Date.now()}`;
+         const newPictureUrl = `${API_BASE_URL}/profile-picture?token=${encodeURIComponent(token)}&t=${Date.now()}`;
         setProfilePicture(newPictureUrl);
         setOriginalProfilePicture(newPictureUrl);
       }

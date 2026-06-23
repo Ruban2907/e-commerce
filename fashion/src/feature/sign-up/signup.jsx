@@ -3,6 +3,7 @@ import { data, useNavigate } from "react-router-dom";
 import { setUserInfo } from "../../utils/userUtils";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_BASE_URL } from "../../services/api";
 
 const SignInPage = () => {
   const [form, setForm] = useState({ 
@@ -65,7 +66,7 @@ const SignInPage = () => {
       formData.append('picture', selectedFile);
     }
 
-    fetch("http://localhost:8002/signup", {
+    fetch(`${API_BASE_URL}/signup`, {
       method: "POST",
       body: formData, 
     })
