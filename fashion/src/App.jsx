@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Sign from './page/sign-up/index.jsx';
 import Login from './page/login/index.jsx';
-import Index from './page/home';
-import About from './page/about';
+import Index from './page/home/Index.jsx';
+import About from './page/about/Index.jsx';
 import Blog from './page/blog';
 import Header from './shared/components/Header';
 import Final from './shared/components/Final';
